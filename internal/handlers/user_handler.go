@@ -1,7 +1,7 @@
 package handlers
 
 import (
-	"fmt"
+	"log"
 	"net/http"
 	"todo_api/internal/models"
 	"todo_api/internal/repository"
@@ -25,8 +25,8 @@ func CreateUserHandler(pool *pgxpool.Pool ) gin.HandlerFunc {
 
 		if err := c.ShouldBindJSON(&input); err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to bind JSON"})
-			fmt.Sprintln(err.Error())
-			return 
+			log.Println("bind JSON failed:", err.Error())
+			return
 		}
 
 		if len(input.Password) < 6 {
@@ -38,7 +38,8 @@ func CreateUserHandler(pool *pgxpool.Pool ) gin.HandlerFunc {
 
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to hash password"})
-			fmt.Sprintln(err.Error())
+			log.Println("hash password failed:", err.Error())
+			return
 		}
 
 		users := &models.User{
@@ -50,7 +51,8 @@ func CreateUserHandler(pool *pgxpool.Pool ) gin.HandlerFunc {
 
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": " failed to create user"})
-			fmt.Sprintf(err.Error())
+			log.Println("create user failed:", err.Error())
+			return
 		}
 
 		c.JSON(http.StatusOK, gin.H{ "User Created successfully": user})

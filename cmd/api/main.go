@@ -4,7 +4,7 @@ import (
 	"log"
 	"todo_api/internal/config"
 	"todo_api/internal/database"
-	"todo_api/internal/handlers"
+	"todo_api/internal/routes"
 
 	"github.com/gin-gonic/gin"
 )
@@ -37,10 +37,8 @@ func main() {
 		})
 	})
 
-	router.POST("/todos", handlers.CreateTodoHandler(pool))
-	router.GET("/todos", handlers.GetAllTodosHandler(pool))
-	router.PATCH("/todos/:id", handlers.UpdateTodoHandler(pool))
-	router.GET("/todos/:id", handlers.GetTodoByIdHandler(pool))
-	router.DELETE("/todos/:id", handlers.DeleteTodoHandler(pool))
+	routes.RegisterTodoRoutes(router, pool)
+	routes.RegisterUserRoutes(router, pool)
+
 	router.Run(":" + cfg.Port)
 }
